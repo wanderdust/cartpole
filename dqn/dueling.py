@@ -12,23 +12,14 @@ class DuelingNet(ModelVanilla):
     def build_model(self):
         model = Sequential()
         
-        input = Input((self.state_size))
+        input = Input(shape=(self.state_size,))
 
-        conv1 = Conv2D(filters=32, kernel_size=8, padding='valid', activation='relu', 
-                        strides=(4,4), input_shape=self.state_size)(input)
+        fc1 = Dense(512, activation='relu')(input)
 
-        conv2 = Conv2D(filters=64, kernel_size=4, padding='valid', activation='relu',
-                        strides=(2,2))(conv1)
-
-        conv3 = Conv2D(filters=64, kernel_size=3, padding='same', activation='relu',
-                        strides=(1,1))(conv2)
-
-        flatten = Flatten()(conv3)
-
-        fc1 = Dense(512, activation='relu')(flatten)
+        fc2 = Dense(256, activation='relu')(fc1)
         
         # Build the dueling net
-        x = Dense(self.action_size + 1, activation='linear')(fc1)
+        x = Dense(self.action_size + 1, activation='linear')(fc2)
         policy = Lambda(lambda i: K.expand_dims(i[:,0],-1) + i[:,1:] - K.mean(i[:,1:], keepdims=True),
                         output_shape=(self.action_size,))(x)
 

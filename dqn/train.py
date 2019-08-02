@@ -64,7 +64,7 @@ class Train:
 
       # Save model weights evey n episodes or on the last episode
       if learn and e % save_episodes == 0 or e == episodes:
-        self.agent.save_weights('test_pong')
+        self.agent.save_weights('dueling')
         progress_bar.set_description("Saving the model")
 
   def plot_rewards(self, mean_avg=10):
